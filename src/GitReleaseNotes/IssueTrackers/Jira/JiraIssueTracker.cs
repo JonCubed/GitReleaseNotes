@@ -26,7 +26,8 @@ namespace GitReleaseNotes.IssueTrackers.Jira
                 return false;
             }
 
-            if (string.IsNullOrEmpty(arguments.ProjectId))
+            // if we have a jql we don't need the project id
+            if (string.IsNullOrEmpty(arguments.Jql) && string.IsNullOrEmpty(arguments.ProjectId))
             {
                 log.WriteLine("/JiraProjectId is a required parameter for Jira");
                 return false;
