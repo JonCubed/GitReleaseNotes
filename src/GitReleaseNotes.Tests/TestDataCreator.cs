@@ -85,7 +85,7 @@ namespace GitReleaseNotes.Tests
 
             SubstituteCommitLog(repo, commits, tags);
             issueTracker
-                .GetClosedIssues(Arg.Any<DateTimeOffset?>())
+                .GetClosedIssues(Arg.Any<DateTimeOffset?>(), null)
                 .Returns(c => closedIssues.Where(i => c.Arg<DateTimeOffset?>() == null || i.DateClosed > c.Arg<DateTimeOffset?>()));
         }
 

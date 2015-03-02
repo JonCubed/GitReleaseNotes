@@ -83,7 +83,7 @@ namespace GitReleaseNotes.IssueTrackers.BitBucket
             return true;
         }
 
-        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since)
+        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, Reference sinceCommit)
         {
             return bitBucketApi.GetClosedIssues(arguments, since, accountName, repoSlug, oauth).ToArray();
         }

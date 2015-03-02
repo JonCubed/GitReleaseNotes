@@ -36,6 +36,9 @@ namespace GitReleaseNotes
         [Description("Url of Jira server")]
         public string JiraServer { get; set; }
 
+        [Description("Regex to match smart commits")]
+        public string SmartCommitsFormat { get; set; }
+
         [Description("Url of YouTrack server")]
         public string YouTrackServer { get; set; }
 

@@ -62,7 +62,7 @@ namespace GitReleaseNotes.Tests.IssueTrackers.GitHub
                     }
                 }.AsReadOnly()));
 
-            var closedIssues = sut.GetClosedIssues(DateTimeOffset.Now.AddDays(-2));
+            var closedIssues = sut.GetClosedIssues(DateTimeOffset.Now.AddDays(-2), null);
             var onlineIssue = closedIssues.Single();
             onlineIssue.Title.ShouldBe("Issue Title");
             onlineIssue.Id.ShouldBe("#1");
@@ -105,7 +105,7 @@ namespace GitReleaseNotes.Tests.IssueTrackers.GitHub
         {
             repo.Network.Remotes.Add("upstream", "http://github.com/Org/Repo.With.Dots");
 
-            sut.GetClosedIssues(DateTimeOffset.Now.AddDays(-2));
+            sut.GetClosedIssues(DateTimeOffset.Now.AddDays(-2),  null);
 
             issuesClient.Received().GetForRepository("Org", "Repo.With.Dots", Arg.Any<RepositoryIssueRequest>());
         }

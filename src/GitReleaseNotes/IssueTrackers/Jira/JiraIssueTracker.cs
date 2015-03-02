@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LibGit2Sharp;
 
 namespace GitReleaseNotes.IssueTrackers.Jira
 {
@@ -9,12 +10,14 @@ namespace GitReleaseNotes.IssueTrackers.Jira
         private readonly GitReleaseNotesArguments arguments;
         private readonly IJiraApi jiraApi;
         private readonly ILog log;
+        private readonly IRepository gitRepository;
 
-        public JiraIssueTracker(IJiraApi jiraApi, ILog log, GitReleaseNotesArguments arguments)
+        public JiraIssueTracker(IRepository gitRepository, IJiraApi jiraApi, ILog log, GitReleaseNotesArguments arguments)
         {
             this.jiraApi = jiraApi;
             this.log = log;
             this.arguments = arguments;
+            this.gitRepository = gitRepository;
         }
 
         public bool VerifyArgumentsAndWriteErrorsToConsole()
@@ -54,9 +57,13 @@ namespace GitReleaseNotes.IssueTrackers.Jira
             return true;
         }
 
-        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since)
+        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, Reference sinceCommit)
         {
-            return jiraApi.GetClosedIssues(arguments, since).ToArray();
+            var issues = !string.IsNullOrEmpty(arguments.SmartCommitsFormat)
+                            ? jiraApi.GetSmartCommitIssues(arguments, gitRepository.Commits, gitRepository.Refs) 
+                            : jiraApi.GetClosedIssues(arguments, since);
+
+            return issues.ToArray();
         }
 
         public bool RemotePresentWhichMatches { get { return false; }}

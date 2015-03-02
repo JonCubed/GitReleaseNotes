@@ -101,7 +101,7 @@ namespace GitReleaseNotes.IssueTrackers.GitHub
             return false;
         }
 
-        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since)
+        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, LibGit2Sharp.Reference sinceCommit)
         {
             string organisation;
             string repository;

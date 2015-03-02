@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LibGit2Sharp;
 
 namespace GitReleaseNotes.IssueTrackers.YouTrack
 {
@@ -53,7 +54,7 @@ namespace GitReleaseNotes.IssueTrackers.YouTrack
             return true;
         }
 
-        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since)
+        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, Reference sinceCommit)
         {
             return youTrackApi.GetClosedIssues(arguments, since).ToArray();
         }

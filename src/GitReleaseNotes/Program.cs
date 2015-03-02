@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
 using Args.Help;
 using Args.Help.Formatters;
 using GitReleaseNotes.FileSystem;
@@ -15,6 +14,7 @@ using GitReleaseNotes.IssueTrackers.Jira;
 using GitReleaseNotes.IssueTrackers.YouTrack;
 using LibGit2Sharp;
 using Octokit;
+using Configuration = Args.Configuration;
 using Credentials = Octokit.Credentials;
 using Repository = LibGit2Sharp.Repository;
 
@@ -36,7 +36,7 @@ namespace GitReleaseNotes
 
         private static int GenerateReleaseNotes(string[] args)
         {
-            var modelBindingDefinition = Args.Configuration.Configure<GitReleaseNotesArguments>();
+            var modelBindingDefinition = Configuration.Configure<GitReleaseNotesArguments>();
 
             if (args.Any(a => a == "/?" || a == "?" || a.Equals("/help", StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -132,7 +132,7 @@ namespace GitReleaseNotes
                     IssueTracker.GitHub,
                     new GitHubIssueTracker(repository, () =>
                     {
-                        var gitHubClient = new GitHubClient(new Octokit.ProductHeaderValue("GitReleaseNotes"));
+                        var gitHubClient = new GitHubClient(new ProductHeaderValue("GitReleaseNotes"));
                         if (arguments.Token != null)
                         {
                             gitHubClient.Credentials = new Credentials(arguments.Token);
@@ -143,7 +143,7 @@ namespace GitReleaseNotes
                 },
                 {
                     IssueTracker.Jira, 
-                    new JiraIssueTracker(new JiraApi(), log, arguments)
+                    new JiraIssueTracker(repository, new JiraApi(), log, arguments)
                 },
                 {
                     IssueTracker.YouTrack,

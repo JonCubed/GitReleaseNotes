@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Web.UI.WebControls;
 using GitReleaseNotes.Git;
 using GitReleaseNotes.IssueTrackers;
 using LibGit2Sharp;
@@ -19,13 +20,15 @@ namespace GitReleaseNotes
                 ??
                 tagToStartFrom.Commit.Author.When;
 
-            var closedIssues = issueTracker.GetClosedIssues(findIssuesSince).ToArray();
+            var closedIssues = issueTracker.GetClosedIssues(findIssuesSince, null).ToArray();
 
             var semanticReleases = (
                 from release in releases
                 let releaseNoteItems = closedIssues
                     .Where(i => (release.When == null || i.DateClosed < release.When) && (release.PreviousReleaseDate == null || i.DateClosed > release.PreviousReleaseDate))
                     .Select(i => new ReleaseNoteItem(i.Title, i.Id, i.HtmlUrl, i.Labels, i.DateClosed, i.Contributors))
+                    .GroupBy(i=> i.IssueNumber)
+                    .Select(g=>g.First())
                     .ToList<IReleaseNoteLine>()
                 let beginningSha = release.FirstCommit == null ? null : release.FirstCommit.Substring(0, 10)
                 let endSha = release.LastCommit == null ? null : release.LastCommit.Substring(0, 10)

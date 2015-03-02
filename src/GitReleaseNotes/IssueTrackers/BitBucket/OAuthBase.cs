@@ -95,7 +95,7 @@ namespace GitReleaseNotes.IssueTrackers.BitBucket {
                 throw new ArgumentNullException("data");
             }
 
-            byte[] dataBuffer = System.Text.Encoding.ASCII.GetBytes(data);
+            byte[] dataBuffer = Encoding.ASCII.GetBytes(data);
             byte[] hashBytes = hashAlgorithm.ComputeHash(dataBuffer);
 
             return Convert.ToBase64String(hashBytes);

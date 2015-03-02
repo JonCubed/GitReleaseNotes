@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace GitReleaseNotes.IssueTrackers.BitBucket
@@ -30,7 +31,7 @@ namespace GitReleaseNotes.IssueTrackers.BitBucket
             {
                 throw new Exception("Failed to query BitBucket: " + response.StatusDescription);
             }
-            dynamic responseObject = SimpleJson.DeserializeObject(response.Content);
+            dynamic responseObject = JsonConvert.DeserializeObject(response.Content);
             var issues = new List<OnlineIssue>();
             foreach (var issue in responseObject.issues)
             {
