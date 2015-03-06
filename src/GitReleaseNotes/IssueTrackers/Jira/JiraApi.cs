@@ -47,8 +47,8 @@ namespace GitReleaseNotes.IssueTrackers.Jira
             });
 
             // get project keys from jira
-            var projectKeys = GetProjectKeysFromJira(arguments);
-            var projectKeyExp = string.Format("({0})-[0-9]+", string.Join("|", projectKeys));
+            //var projectKeys = GetProjectKeysFromJira(arguments);
+            //var projectKeyExp = string.Format("({0})-[0-9]+", string.Join("|", projectKeys));
 
             // get all issues in smart commits
             var smartCommits = commits.Select(c => new { Commit = c, Matches = regexExp.Matches(c.Message)
