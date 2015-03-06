@@ -54,7 +54,7 @@ namespace GitReleaseNotes.IssueTrackers.YouTrack
             return true;
         }
 
-        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, Reference sinceCommit)
+        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, string sinceCommit)
         {
             return youTrackApi.GetClosedIssues(arguments, since).ToArray();
         }

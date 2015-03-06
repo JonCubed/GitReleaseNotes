@@ -36,12 +36,13 @@ namespace GitReleaseNotes.IssueTrackers.Jira
         /// <param name="sinceCommit"></param>
         /// <returns></returns>
         public IEnumerable<OnlineIssue> GetSmartCommitIssues(GitReleaseNotesArguments arguments,
-            IQueryableCommitLog commitLog, ReferenceCollection sinceCommit)
+            IQueryableCommitLog commitLog, string sinceCommit)
         {
             var regexExp = new Regex(arguments.SmartCommitsFormat, RegexOptions.Multiline | RegexOptions.IgnoreCase);
-
+            
             var commits = commitLog.QueryBy(new CommitFilter
             {
+                Until = sinceCommit,
                 SortBy = CommitSortStrategies.Time | CommitSortStrategies.Reverse
             });
 
@@ -52,7 +53,7 @@ namespace GitReleaseNotes.IssueTrackers.Jira
             // get all issues in smart commits
             var smartCommits = commits.Select(c => new { Commit = c, Matches = regexExp.Matches(c.Message)
                                                                                        .Cast<Match>()
-                                                                                       .Where(m => Regex.IsMatch(m.Value,projectKeyExp))
+                                                                                       //.Where(m => Regex.IsMatch(m.Value,projectKeyExp))
                                                                                        .Select(m => m.Value).ToList() })
                                        .Where(x => x.Matches.Count > 0)
                                        .SelectMany(x => x.Matches, (x, y) => new

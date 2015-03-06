@@ -57,10 +57,10 @@ namespace GitReleaseNotes.IssueTrackers.Jira
             return true;
         }
 
-        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, Reference sinceCommit)
+        public IEnumerable<OnlineIssue> GetClosedIssues(DateTimeOffset? since, string sinceCommit)
         {
             var issues = !string.IsNullOrEmpty(arguments.SmartCommitsFormat)
-                            ? jiraApi.GetSmartCommitIssues(arguments, gitRepository.Commits, gitRepository.Refs) 
+                            ? jiraApi.GetSmartCommitIssues(arguments, gitRepository.Commits, sinceCommit) 
                             : jiraApi.GetClosedIssues(arguments, since);
 
             return issues.ToArray();
