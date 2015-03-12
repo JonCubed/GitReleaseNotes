@@ -215,7 +215,11 @@ namespace GitReleaseNotes
                 }
                 if (releaseFromPrevious != null)
                 {
-                    semanticRelease.ReleaseNoteLines.AddRange(releaseFromPrevious.ReleaseNoteLines);
+                    semanticRelease.ReleaseNoteLines.AddRange(releaseFromPrevious.ReleaseNoteLines
+                                                                                 .OfType<ReleaseNoteItem>()
+                                                                                 .Where(n => semanticRelease.ReleaseNoteLines
+                                                                                                            .OfType<ReleaseNoteItem>()
+                                                                                                            .All(x=>x.IssueNumber != n.IssueNumber)));
                 }
             }
 
