@@ -238,7 +238,7 @@ namespace GitReleaseNotes.IssueTrackers.Jira
             {
                 var response = (HttpWebResponse) ex.Response;
 
-                if ((int) response.StatusCode == 404) return null;
+                if ((int)response.StatusCode == 404 || (int)response.StatusCode == 403) return null;
                 
                 throw new Exception("Failed to query Jira: " + response.StatusDescription);
             }
