@@ -11,7 +11,7 @@ namespace GitReleaseNotes
     {
         //readonly Regex _issueRegex = new Regex(" - (?<Issue>.*?)(?<IssueLink> \\[(?<IssueId>.*?)\\]\\((?<IssueUrl>.*?)\\))*( *\\+(?<Tag>[^ \\+]*))*", RegexOptions.Compiled);
         static readonly Regex ReleaseRegex = new Regex("# (?<Title>.*?)( \\((?<Date>.*?)\\))?$", RegexOptions.Compiled);
-        static readonly Regex LinkRegex = new Regex(@"\[(?<Text>.*?)\]\((?<Link>.*?)\)$", RegexOptions.Compiled);
+        static readonly Regex LinkRegex = new Regex(@"\[(?<Text>.*?)\]\((?<Link>.*?)\)", RegexOptions.Compiled);
         readonly string[] categories;
         readonly SemanticRelease[] releases;
 
@@ -142,8 +142,18 @@ namespace GitReleaseNotes
                 else if (line.StartsWith(" - "))
                 {
                     // Improve this parsing to extract issue numbers etc
+                    string issueNumber = null;
+                    Uri issueLink = null; 
                     var title = line.StartsWith(" - ") ? line.Substring(3) : line;
-                    var releaseNoteItem = new ReleaseNoteItem(title, null, null, null, currentRelease.When, new Contributor[0]);
+
+                    var linkMatch = LinkRegex.Match(line);
+                    if (linkMatch.Success)
+                    {
+                        issueNumber = linkMatch.Groups["Text"].Value;
+                        issueLink = new Uri(linkMatch.Groups["Link"].Value);
+                    }
+
+                    var releaseNoteItem = new ReleaseNoteItem(title, issueNumber, issueLink, null, currentRelease.When, new Contributor[0]);
                     currentRelease.ReleaseNoteLines.Add(releaseNoteItem);
                 }
                 else if (string.IsNullOrWhiteSpace(line))
