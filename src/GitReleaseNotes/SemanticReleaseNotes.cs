@@ -11,7 +11,8 @@ namespace GitReleaseNotes
     {
         //readonly Regex _issueRegex = new Regex(" - (?<Issue>.*?)(?<IssueLink> \\[(?<IssueId>.*?)\\]\\((?<IssueUrl>.*?)\\))*( *\\+(?<Tag>[^ \\+]*))*", RegexOptions.Compiled);
         static readonly Regex ReleaseRegex = new Regex("# (?<Title>.*?)( \\((?<Date>.*?)\\))?$", RegexOptions.Compiled);
-        static readonly Regex LinkRegex = new Regex(@"\[(?<Text>.*?)\]\((?<Link>.*?)\)", RegexOptions.Compiled);
+        static readonly Regex LinkRegex = new Regex(@"\[(?<Text>.*?)\]\((?<Link>.*?)\)$", RegexOptions.Compiled);
+        static readonly Regex IssueRegex = new Regex(@"\[(?<Text>.*?)\]\((?<Link>.*?)\) - (?<Summary>.*)", RegexOptions.Compiled);
         readonly string[] categories;
         readonly SemanticRelease[] releases;
 
@@ -146,12 +147,14 @@ namespace GitReleaseNotes
                     Uri issueLink = null; 
                     var title = line.StartsWith(" - ") ? line.Substring(3) : line;
 
-                    var linkMatch = LinkRegex.Match(line);
+                    var linkMatch = IssueRegex.Match(line);
                     if (linkMatch.Success)
                     {
                         issueNumber = linkMatch.Groups["Text"].Value;
                         issueLink = new Uri(linkMatch.Groups["Link"].Value);
+                        title = linkMatch.Groups["Summary"].Value;
                     }
+
 
                     var releaseNoteItem = new ReleaseNoteItem(title, issueNumber, issueLink, null, currentRelease.When, new Contributor[0]);
                     currentRelease.ReleaseNoteLines.Add(releaseNoteItem);
