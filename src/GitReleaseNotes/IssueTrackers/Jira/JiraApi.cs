@@ -45,15 +45,10 @@ namespace GitReleaseNotes.IssueTrackers.Jira
                 Until = sinceCommit,
                 SortBy = CommitSortStrategies.Time | CommitSortStrategies.Reverse
             });
-
-            // get project keys from jira
-            //var projectKeys = GetProjectKeysFromJira(arguments);
-            //var projectKeyExp = string.Format("({0})-[0-9]+", string.Join("|", projectKeys));
-
+            
             // get all issues in smart commits
             var smartCommits = commits.Select(c => new { Commit = c, Matches = regexExp.Matches(c.Message)
                                                                                        .Cast<Match>()
-                                                                                       //.Where(m => Regex.IsMatch(m.Value,projectKeyExp))
                                                                                        .Select(m => m.Value).ToList() })
                                        .Where(x => x.Matches.Count > 0)
                                        .SelectMany(x => x.Matches, (x, y) => new
