@@ -216,7 +216,7 @@ namespace GitReleaseNotes
                 {
                     semanticRelease.ReleaseNoteLines.AddRange(releaseFromThis.ReleaseNoteLines);
                 }
-                if (releaseFromPrevious != null)
+                if (releaseFromPrevious != null && releaseFromPrevious.When.HasValue) // don't merge previous vNext
                 {
                     semanticRelease.ReleaseNoteLines.AddRange(releaseFromPrevious.ReleaseNoteLines
                                                                                  .OfType<ReleaseNoteItem>()
