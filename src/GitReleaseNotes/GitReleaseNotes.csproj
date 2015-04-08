@@ -13,7 +13,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <NuGetPackageImportStamp>9ab793cc</NuGetPackageImportStamp>
+    <NuGetPackageImportStamp>dbced723</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -39,11 +39,21 @@
     <Reference Include="Args">
       <HintPath>..\packages\Args.1.1.2\lib\Net40\Args.dll</HintPath>
     </Reference>
-    <Reference Include="LibGit2Sharp">
-      <HintPath>..\packages\LibGit2Sharp.0.20.2.0\lib\net40\LibGit2Sharp.dll</HintPath>
+    <Reference Include="Atlassian.Jira, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Atlassian.SDK.2.5.0\lib\Atlassian.Jira.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Octokit">
-      <HintPath>..\packages\Octokit.0.6.2\lib\net45\Octokit.dll</HintPath>
+    <Reference Include="LibGit2Sharp, Version=0.20.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.20.2.0\lib\net40\LibGit2Sharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1-beta1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Octokit, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Octokit.0.9.0\lib\net45\Octokit.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
@@ -52,6 +62,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -62,16 +73,34 @@
   <ItemGroup>
     <Compile Include="ArgumentVerifier.cs" />
     <Compile Include="BlankLine.cs" />
+    <Compile Include="Categories.cs" />
+    <Compile Include="Context\AuthenticationContext.cs" />
+    <Compile Include="Context\BitBucketContext.cs" />
+    <Compile Include="Context\Context.cs" />
+    <Compile Include="Context\GitHubContext.cs" />
+    <Compile Include="Context\JiraContext.cs" />
+    <Compile Include="Context\RepositoryContext.cs" />
+    <Compile Include="Context\YouTrackContext.cs" />
     <Compile Include="Contributor.cs" />
+    <Compile Include="Exceptions\GitReleaseNotesException.cs" />
+    <Compile Include="Extensions\GitReleaseNotesArgumentsExtensions.cs" />
+    <Compile Include="Extensions\ILogExtensions.cs" />
+    <Compile Include="GitReleaseNotesEnvironment.cs" />
+    <Compile Include="Git\GitBranchNameInfo.cs" />
+    <Compile Include="Git\GitLocalRepositoryContextFactory.cs" />
+    <Compile Include="Git\GitRemoteRepositoryContextFactory.cs" />
+    <Compile Include="Git\GitRepositoryContext.cs" />
+    <Compile Include="Git\IGitRepositoryContextFactory.cs" />
     <Compile Include="IReleaseNoteLine.cs" />
     <Compile Include="IssueTrackers\BitBucket\BitBucketIssueTracker.cs" />
     <Compile Include="IssueTrackers\BitBucket\IBitBucketApi.cs" />
     <Compile Include="IssueTrackers\BitBucket\BitBucketApi.cs" />
     <Compile Include="IssueTrackers\BitBucket\OAuthBase.cs" />
+    <Compile Include="Logging\CustomLog.cs" />
     <Compile Include="ReleaseFinder.cs" />
     <Compile Include="FileSystem\FileSystem.cs" />
     <Compile Include="FileSystem\IFileSystem.cs" />
-    <Compile Include="ILog.cs" />
+    <Compile Include="Logging\ILog.cs" />
     <Compile Include="IssueTrackers\GitHub\GitHubIssueTracker.cs" />
     <Compile Include="GitReleaseNotesArguments.cs" />
     <Compile Include="Git\GitDirFinder.cs" />
@@ -90,7 +119,7 @@
     <Compile Include="IssueTrackers\Jira\JiraApi.cs" />
     <Compile Include="IssueTrackers\Jira\JiraIssue.cs" />
     <Compile Include="IssueTrackers\Jira\JiraIssueTracker.cs" />
-    <Compile Include="Log.cs" />
+    <Compile Include="Logging\ConsoleLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Git\TaggedCommit.cs" />
@@ -117,8 +146,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Fody.1.26.4\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.26.4\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.0.20.2.0\build\net40\LibGit2Sharp.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.0.20.2.0\build\net40\LibGit2Sharp.props'))" />
+    <Error Condition="!Exists('..\packages\Fody.1.28.3\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.1.28.3\build\Fody.targets'))" />
   </Target>
   <UsingTask TaskName="CosturaCleanup" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" TaskFactory="CodeTaskFactory">
     <ParameterGroup>
@@ -156,7 +185,11 @@ foreach (var item in filesToCleanup)
   <Target Name="CleanReferenceCopyLocalPaths" AfterTargets="AfterBuild;NonWinFodyTarget">
     <CosturaCleanup Config="FodyWeavers.xml" Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
   </Target>
-  <Import Project="..\packages\Fody.1.26.4\build\Fody.targets" Condition="Exists('..\packages\Fody.1.26.4\build\Fody.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Fody.1.28.3\build\Fody.targets" Condition="Exists('..\packages\Fody.1.28.3\build\Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

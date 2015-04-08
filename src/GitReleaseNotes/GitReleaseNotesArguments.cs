@@ -21,6 +21,18 @@ namespace GitReleaseNotes
         [Description("GitHub access token")]
         public string Token { get; set; }
 
+        [Description("GitHub username")]
+        public string RepoUsername { get; set; }
+
+        [Description("GitHub password")]
+        public string RepoPassword { get; set; }
+
+        [Description("Url of repository")]
+        public string RepoUrl { get; set; }
+
+        [Description("The branch name to checkout any existing release notes file")]
+        public string RepoBranch { get; set; }
+
         [Description("Issue tracker username")]
         public string Username { get; set; }
 
@@ -59,5 +71,9 @@ namespace GitReleaseNotes
 
         [Description("BitBuckets Consumer Secret Key used for Oauth authentication")]
         public string ConsumerSecretKey { get; set; }
+
+        [Description("Specifies that all labels should be included in the release notes, if not specified then only the defaults (bug, enhancement, feature) are included.")]
+        public bool AllLabels { get; set; }
+
     }
 }
